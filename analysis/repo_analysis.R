@@ -138,9 +138,9 @@ contributions_week %>%
   facet_wrap(~ carpentry, ncol = 1) +
   theme_minimal() +
   theme(legend.position = "none") +
-  labs(title = "Adjusted number of commits over repo age (linear)",
+  labs(title = "Number of commits over repo age",
        x = "Repo Age (days)",
-       y = "Linear Adjusted number of commits")
+       y = "Number of commits")
 
 ggsave(here("./output/repo_analysis/weekly_commit_count.png"))
 
