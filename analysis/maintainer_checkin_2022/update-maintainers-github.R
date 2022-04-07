@@ -5,7 +5,11 @@ library("jsonlite")
 
 options(modify.maintainer.permissions = FALSE)
 on.exit(Sys.setenv(GITHUB_TOKEN = NULL))
-source(here::here("R", "get-teams.R"))
+if (file.exists(here::here("data", "teams.json"))) {
+  source(here::here("R", "get-gh-token.R"))
+} else {
+  source(here::here("R", "get-teams.R"))
+}
 
 fix_repo_names <- function(repos) {
   for (i in seq(repos)) {
@@ -37,15 +41,17 @@ username_in_team <- function(member, team) {
 }
 
 remove_username_from_teams <- function(username, repo, teams) {
+  danger_scope <- grepl("admin:org", gh::gh_whoami()$scopes)
   for (team in teams) {
     team_slug <- team$slug[[1]]
     if (username_in_team(username, team)) {
       cli_alert_success("SUCCESS! {.strong {username}} is a member of {.strong {team_slug}}")
-      org <- strsplit(repo, "/")[[1]][1]
-      deeleet <- "DELETE /orgs/{org}/teams/{team_slug}/memberships/{username}"
-      cli_alert_info("Running {.code DELETE /orgs/{org}/teams/{team_slug}/memberships/{username}}")
-      # gh::gh(deeleet, org = org, team_slug = team_slug, username = username)
-      
+      if (danger_scope) {
+        org <- strsplit(repo, "/")[[1]][1]
+        deeleet <- "DELETE /orgs/{org}/teams/{team_slug}/memberships/{username}"
+        cli_alert_info("Running {.code DELETE /orgs/{org}/teams/{team_slug}/memberships/{username}}")
+        gh::gh(deeleet, org = org, team_slug = team_slug, username = username)
+      }
     } else {
       cli_alert_danger("{.emph (屮ﾟДﾟ)屮 {.strong {username}} is not a member of {.strong {team_slug}}}")
     }
