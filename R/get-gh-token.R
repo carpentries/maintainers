@@ -8,7 +8,7 @@ damage <- getOption("modify.maintainer.permissions", default = FALSE)
 if (damage) {
   message("CAUTION: This token has write access to any organisations you have control of.")
 }
-scopes <- c("public_repo", "read:org", if (damage) "write:org" else NULL)
+scopes <- c("public_repo", if (damage) "admin:org" else "read:org")
 desc <- if (damage) "DANGER%20Write%20" else "Read%20"
 url <- "https://github.com/settings/tokens/new?scopes=%s&description=%sCarpentries%%20Data"
 browseURL(sprintf(url, paste(scopes, collapse = ","), desc))
