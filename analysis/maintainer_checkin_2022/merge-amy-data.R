@@ -13,7 +13,10 @@ no_nothing <- manual |>
   filter(is.na(gh_name_clean), is.na(email_clean)) |>
   distinct()
 
-inner_join(no_gh, amy, by = c("email_clean" = "person_email"), na_match = "never")
+gh_by_email <- bind_rows(
+inner_join(no_gh, amy, by = c("email_clean" = "person_email"), na_match = "never"),
 inner_join(no_gh, amy, by = c("email_clean" = "person_secondary_email"), na_match = "never")
+)
 
-inner_join(no_nothing, amy, by = c("Name" = "person_name"), na_match = "never")
+gh_by_name <- inner_join(no_nothing, amy, by = c("Name" = "person_name"), na_match = "never")
+
